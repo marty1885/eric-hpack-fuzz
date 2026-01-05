@@ -1291,9 +1291,10 @@ class HpRBufferCache {
         }
 #endif // ERICHPACKDEBUGFLAG
         while(cacheBit < hufftb.thisBit) {
-            if(strpos++ >= strLength) {
+            if(strpos >= strLength) {
                 return StopAtStringLength;
             }
+            strpos++;
             if(!r.Next()) {
                 return StopAtRBuffEnd;
             }

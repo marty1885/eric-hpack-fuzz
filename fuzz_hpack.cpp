@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <stdint.h>
 #include <stddef.h>
 #include <vector>
@@ -7,16 +8,26 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     EricHpack::Hpack hpack;
     std::vector<EricHpack::KeyValPair> header;
 
-    // Create the buffer from fuzzer input
-    // The library expects unsigned char*, so we cast the uint8_t*
-    std::unique_ptr<EricHpack::HpRBuffer> rbuffer = EricHpack::Hpack::MakeHpRBuffer(data, size);
+    const uint8_t* begin = data;
+    const uint8_t* end = data + size;
 
-    if (rbuffer) {
-        // Run the decoder
-        // We catch exceptions just in case, though the library seems to use return codes.
-        // If it throws, we want the fuzzer to find it (unless it's a known safe exception).
-        // Based on the header, it returns HpackStatus, so likely no exceptions.
+    while(begin != end) {
+        size_t len = static_cast<size_t>(*begin);
+        if (begin + len > end) {
+            len = end - begin;
+        }
+        // 0 length not allowed explicitly by the HpRBuffer interface
+        if(len == 0) {
+            continue;
+        }
+
+        std::unique_ptr<EricHpack::HpRBuffer> rbuffer = EricHpack::Hpack::MakeHpRBuffer(begin, len);
+        begin += len;
+        if(!rbuffer) {
+            continue;
+        }
         hpack.Decoder(*rbuffer, header);
+        
     }
 
     return 0;
