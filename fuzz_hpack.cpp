@@ -11,7 +11,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     const uint8_t* begin = data;
     const uint8_t* end = data + size;
 
-    int nframes = 0;
     while(begin != end) {
         size_t len = static_cast<size_t>(*begin);
         if (begin + len > end) {
@@ -28,10 +27,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
             continue;
         }
         hpack.Decoder(*rbuffer, header);
-        nframes++;
-        
     }
-    __sanitizer_cov_trace_cmp8(nframes, nframes);
 
     return 0;
 }
