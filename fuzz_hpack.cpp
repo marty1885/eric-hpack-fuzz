@@ -26,7 +26,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
         if(!rbuffer) {
             continue;
         }
-        hpack.Decoder(*rbuffer, header);
+        if(hpack.Decoder(*rbuffer, header) != EricHpack::HpackStatus::Success) {
+            break;
+        }
     }
 
     return 0;
