@@ -1390,6 +1390,9 @@ ENDATSTRLENGTH:
 
 inline HpackStatus StringLiteralDecodeOctet(HpRBuffer &r, std::string &str,const Uinteger5byte strLength) {
     if(DecodeStringLiteralOctet) {
+        if (strLength > r.Size()) {
+            return HpackStatus::StringLiteralOctet;
+        }
         str.reserve(strLength);
         for(Uinteger5byte i = 0; i<strLength; ++i) {
             if(r.Next()) {
