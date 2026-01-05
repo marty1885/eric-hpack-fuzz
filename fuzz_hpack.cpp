@@ -18,7 +18,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
         }
         // 0 length not allowed explicitly by the HpRBuffer interface
         if(len == 0) {
-            continue;
+            break;
         }
 
         std::unique_ptr<EricHpack::HpRBuffer> rbuffer = EricHpack::Hpack::MakeHpRBuffer(begin, len);
